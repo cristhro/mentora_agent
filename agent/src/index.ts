@@ -1,9 +1,7 @@
 import { PostgresDatabaseAdapter } from "@elizaos/adapter-postgres";
 import { SqliteDatabaseAdapter } from "@elizaos/adapter-sqlite";
 import { AutoClientInterface } from "@elizaos/client-auto";
-import { DiscordClientInterface } from "@elizaos/client-discord";
 import { FarcasterAgentClient } from "@elizaos/client-farcaster";
-import { LensAgentClient } from "@elizaos/client-lens";
 import { SlackClientInterface } from "@elizaos/client-slack";
 import { TelegramClientInterface } from "@elizaos/client-telegram";
 import { TwitterClientInterface } from "@elizaos/client-twitter";
@@ -43,7 +41,6 @@ import {
 } from "@elizaos/plugin-coinbase";
 import { confluxPlugin } from "@elizaos/plugin-conflux";
 import { evmPlugin } from "@elizaos/plugin-evm";
-import { storyPlugin } from "@elizaos/plugin-story";
 import { flowPlugin } from "@elizaos/plugin-flow";
 import { imageGenerationPlugin } from "@elizaos/plugin-image-generation";
 import { multiversxPlugin } from "@elizaos/plugin-multiversx";
@@ -55,6 +52,7 @@ import { suiPlugin } from "@elizaos/plugin-sui";
 import { TEEMode, teePlugin } from "@elizaos/plugin-tee";
 import { tonPlugin } from "@elizaos/plugin-ton";
 import { zksyncEraPlugin } from "@elizaos/plugin-zksync-era";
+import { difyPlugin } from "@elizaos/plugin-dify";
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
@@ -373,11 +371,6 @@ export async function initializeClients(
         if (autoClient) clients.auto = autoClient;
     }
 
-    if (clientTypes.includes(Clients.DISCORD)) {
-        const discordClient = await DiscordClientInterface.start(runtime);
-        if (discordClient) clients.discord = discordClient;
-    }
-
     if (clientTypes.includes(Clients.TELEGRAM)) {
         const telegramClient = await TelegramClientInterface.start(runtime);
         if (telegramClient) clients.telegram = telegramClient;
@@ -402,11 +395,6 @@ export async function initializeClients(
             clients.farcaster = farcasterClient;
         }
     }
-    if (clientTypes.includes("lens")) {
-        const lensClient = new LensAgentClient(runtime);
-        lensClient.start();
-        clients.lens = lensClient;
-    }
 
     elizaLogger.log("client keys", Object.keys(clients));
 
@@ -416,17 +404,6 @@ export async function initializeClients(
     if (clientTypes.includes("slack")) {
         const slackClient = await SlackClientInterface.start(runtime);
         if (slackClient) clients.slack = slackClient; // Use object property instead of push
-    }
-
-    if (character.plugins?.length > 0) {
-        for (const plugin of character.plugins) {
-            if (plugin.clients) {
-                for (const client of plugin.clients) {
-                    const startedClient = await client.start(runtime);
-                    clients[client.name] = startedClient; // Assuming client has a name property
-                }
-            }
-        }
     }
 
     return clients;
@@ -570,7 +547,7 @@ export async function createAgent(
             getSecret(character, "ZKSYNC_PRIVATE_KEY") ? zksyncEraPlugin : null,
             getSecret(character, "TON_PRIVATE_KEY") ? tonPlugin : null,
             getSecret(character, "SUI_PRIVATE_KEY") ? suiPlugin : null,
-            getSecret(character, "STORY_PRIVATE_KEY") ? storyPlugin : null,
+            getSecret(character, "DIFY_API_KEY") ? difyPlugin : null,
         ].filter(Boolean),
         providers: [],
         actions: [],
