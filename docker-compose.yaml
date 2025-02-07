@@ -33,6 +33,11 @@ services:
             - HELIUS_API_KEY=
             - SERVER_PORT=3000
             - WALLET_SECRET_SALT=secret_salt
+            - DIFY_BASE_URL=http://app.dify.superagentai.online/v1
+            - DIFY_API_KEY=app-I3OpoFJF4Ajch5DJXVqex23a
+            - TELEGRAM_BOT_TOKEN=7971427881:AAHhQdFyL40jTwG7lVKQ8CZlgXpZzIF7UJE
+            - OPENAI_API_KEY=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
+            - ANTHROPIC_API_KEY=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
         ports:
             - "3000:80"
         restart: always

@@ -1,13 +1,24 @@
 import { Plugin } from "@elizaos/core";
-import { sendMessageAction } from "./actions/sendMessage";
+import {
+    chatAction,
+    getConversationAction,
+    deleteConversationAction,
+} from "./actions/difyActions";
+import { difyProvider } from "./providers/difyProvider";
+
+export * from "./types";
+export * from "./services/difyService";
+export * from "./actions/difyActions";
+export * from "./providers/difyProvider";
 
 export const difyPlugin: Plugin = {
     name: "dify",
-    description: "Plugin para integración con Dify.ai",
-    actions: [sendMessageAction],
-    evaluators: [], // Se implementarán los evaluadores necesarios
-    providers: [], // Se implementarán los proveedores de contexto
-    services: [], // Se implementarán los servicios adicionales si son necesarios
+    description: "Plugin para integración con Dify API",
+    actions: [chatAction, getConversationAction, deleteConversationAction],
+    providers: [difyProvider],
+    evaluators: [],
+    services: [],
+    clients: [],
 };
 
 export default difyPlugin;
